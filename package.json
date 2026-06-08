@@ -1,0 +1,50 @@
+{
+  "name": "flint-ui-lsp",
+  "description": "",
+  "author": "Manuel Osorio",
+  "publisher": "Manuel Osorio",
+  "license": "MIT",
+  "version": "0.0.1",
+  "categories": [],
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "activationEvents": [
+    "onLanguage"
+  ],
+  "main": "./client/out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "fml",
+        "extensions": [
+          ".fml",
+          ".flml"
+        ],
+        "aliases": [
+          "Flint Markup Language",
+          "fml",
+          "Flint UI"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fml",
+        "scopeName": "text.fml",
+        "path": "./syntaxes/flint-markup.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^5.9.3"
+  }
+}
