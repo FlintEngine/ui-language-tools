@@ -1,45 +1,47 @@
-
 export type CursorContext =
   | { kind: "element" }
   | { kind: "attribute"; element: string }
   | { kind: "value"; element: string; attribute: string }
   | { kind: "none" };
 
-export function getCursorContext(line: string, character: number): CursorContext {
-  const upToCursor = line.slice(0, character);
+export function getCursorContext(fullTextUpToCursor: string): CursorContext {
+  const lastOpen = fullTextUpToCursor.lastIndexOf('<');
+  const lastClose = fullTextUpToCursor.lastIndexOf('>');
 
-  // Inside a closing tag </... → no completions
-  if (/.*<\/\w*$/.test(upToCursor)) {
-    return { kind: "none" };
+  if (lastOpen > lastClose) {
+    const tagContent = fullTextUpToCursor.slice(lastOpen);
+
+    if (tagContent.startsWith("</")) {
+      return { kind: "none" };
+    }
+
+    const elementMatch = tagContent.match(/^<([\w-]+)/);
+    if (!elementMatch) {
+      return { kind: "element" }; // User typed just "<"
+    }
+
+    const element = elementMatch[1];
+
+    const valueMatch = tagContent.match(/([\w-]+)="([^"]*)$/);
+    if (valueMatch) {
+      return {
+        kind: "value",
+        element,
+        attribute: valueMatch[1],
+      };
+    }
+
+    // If there is whitespace following the tag name, we are evaluating attributes
+    if (/^<[\w-]+\s+/.test(tagContent)) {
+      return { kind: "attribute", element };
+    }
+
+    // Otherwise, the user is still actively typing out the element token label itself
+    return { kind: "element" };
   }
 
-  // After an attribute value assignment e.g. layout="
-  const valueMatch = upToCursor.match(/<(\w+)[^>]*\s+(\w[\w-]*)="[^"]*$/);
-  if (valueMatch) {
-    return {
-      kind: "value",
-      element: valueMatch[1],
-      attribute: valueMatch[2],
-    };
-  }
-  const afterValueMatch = upToCursor.match(/<(\w+)(?:\s+[\w-]+="[^"]*")*\s*$/);
-  if (afterValueMatch) {
-    return {
-      kind: "attribute",
-      element: afterValueMatch[1],
-    };
-  }
-  // Inside a tag after the element name e.g. <panel lay...
-  const attributeMatch = upToCursor.match(/<(\w+)(\s+[\w-]*)?$/);
-  if (attributeMatch && attributeMatch[2] !== undefined) {
-    return {
-      kind: "attribute",
-      element: attributeMatch[1],
-    };
-  }
-
-  // After < e.g. <pan...
-  if (/.*<\w*$/.test(upToCursor)) {
+  // If we are OUTSIDE a tag block, check if a naked chevron sits right at the cursor edge
+  if (/<\w*$/s.test(fullTextUpToCursor)) {
     return { kind: "element" };
   }
 

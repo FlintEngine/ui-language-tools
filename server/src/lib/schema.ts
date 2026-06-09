@@ -1,12 +1,23 @@
+export type ElementKind = "self-closing" | "inline" | "block";
 
 interface SchemaType {
   elements: readonly string[]
+  elementKinds: Record<string, ElementKind>
   attributes: Record<string, string[]>
   values: Record<string, string[]>
 }
 
 export const schema: SchemaType = {
   elements: ["context", "panel", "button", "label", "slider", "sprite"] as const,
+
+  elementKinds: {
+    context: "block",
+    panel: "block",
+    button: "inline",
+    label: "inline",
+    slider: "self-closing",
+    sprite: "self-closing",
+  },
   attributes: {
     context: ["name"],
     panel: ["id", "layout", "spacing", "padding", "horizontal-align", "vertical-align", "layout-grow"],
