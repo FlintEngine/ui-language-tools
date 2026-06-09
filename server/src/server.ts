@@ -31,21 +31,26 @@ const response = (id: RequestMessage['id'], result: unknown) => {
   process.stdout.write(header + message);
 };
 
-let buffer = "";
+let buffer = Buffer.alloc(0);
 
-process.stdin.on("data", (chunk: Buffer | string) => {
-  buffer += chunk.toString();
+process.stdin.on("data", (chunk: Buffer) => {
+  buffer = Buffer.concat([buffer, chunk]);
 
   while (true) {
-    const lengthMatch = buffer.match(/Content-Length: (\d+)\r\n/);
+    const bufferString = buffer.toString("utf-8");
+    const lengthMatch = bufferString.match(/Content-Length: (\d+)\r\n/);
     if (!lengthMatch) break;
 
     const contentLength = parseInt(lengthMatch[1], 10);
-    const messageStart = buffer.indexOf("\r\n\r\n") + 4;
+    const headerEnd = bufferString.indexOf("\r\n\r\n");
+    if (headerEnd === -1) break;
+
+    const messageStart = headerEnd + 4;
 
     if (buffer.length < messageStart + contentLength) break;
 
-    const rawMessage = buffer.slice(messageStart, messageStart + contentLength);
+    const rawMessageBuffer = buffer.subarray(messageStart, messageStart + contentLength);
+    const rawMessage = rawMessageBuffer.toString("utf-8");
 
     const message = JSON.parse(rawMessage) as RequestMessage;
 
@@ -60,6 +65,6 @@ process.stdin.on("data", (chunk: Buffer | string) => {
       }
     }
 
-    buffer = buffer.slice(messageStart + contentLength);
+    buffer = buffer.subarray(messageStart + contentLength);
   }
 });
