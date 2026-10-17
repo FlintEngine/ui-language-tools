@@ -23,6 +23,10 @@
         "extensions": [
           ".flml"
         ],
+        "icon": {
+          "light": "./images/icon.svg",
+          "dark": "./images/icon-reverse.svg"
+        },
         "aliases": [
           "Flint Markup Language",
           "Flint UI"
