@@ -1,14 +1,29 @@
 {
-  "name": "flint-lsp-server",
-  "description": "",
-  "version": "0.0.1",
+  "name": "@flintengine/language-server",
+  "version": "0.1.1",
+  "description": "Language Server Protocol implementation for FlintEngine's declarative UI markup language.",
   "author": "Manuel Osorio",
   "license": "MIT",
-  "engines": {
-    "node": "*"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/FlintEngine/ui-language-tools.git"
+    "url": "git+https://github.com/FlintEngine/ui-language-tools.git",
+    "directory": "server"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "flint-language-server": "out/server.js"
+  },
+  "files": [
+    "out/**/*.js"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3"
   }
 }

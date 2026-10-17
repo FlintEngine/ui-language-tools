@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import log from "./log";
 import { initialize } from "./methods/initialized";
 import { completion } from "./methods/text-document/completion";
