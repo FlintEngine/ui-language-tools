@@ -6,6 +6,7 @@ import {
   ServerOptions,
   TransportKind,
 } from "vscode-languageclient/node";
+import { registerAutoCloseTags } from "./auto-close-tags";
 
 let client: LanguageClient;
 
@@ -40,6 +41,8 @@ export function activate(context: ExtensionContext) {
     serverOptions,
     clientOptions
   );
+
+  registerAutoCloseTags(context);
 
   client.start();
 }

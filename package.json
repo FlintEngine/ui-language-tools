@@ -36,7 +36,17 @@
         "scopeName": "text.flml",
         "path": "./syntaxes/flint-markup.tmLanguage.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "FLML",
+      "properties": {
+        "flml.autoClosingTags": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically insert closing tags after typing '>' or '</'."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
