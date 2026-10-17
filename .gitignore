@@ -4,3 +4,7 @@ client/server
 .vscode-test
 tsconfig.tsbuildinfo
 test-env/
+
+*.zip
+*.vsix
+*.log
