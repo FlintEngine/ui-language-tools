@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdea("2026.1.3")
+        intellijIdea("2026.1.5")
         bundledPlugin("org.jetbrains.plugins.textmate")
     }
 }

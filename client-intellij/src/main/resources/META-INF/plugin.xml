@@ -14,11 +14,11 @@
   <depends>org.jetbrains.plugins.textmate</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <platform.lsp.serverSupportProvider
-      implementation="dev.flintengine.flml.FlmlLspServerSupportProvider" />
+    <platform.lsp.integrationProvider
+        implementation="dev.flintengine.flml.FlmlLspIntegrationProvider"/>
     <textmate.bundleProvider
-      implementation="dev.flintengine.flml.FlmlTextMateBundleProvider" />
+        implementation="dev.flintengine.flml.FlmlTextMateBundleProvider"/>
     <fileIconProvider
-      implementation="dev.flintengine.flml.FlmlFileIconProvider" />
+        implementation="dev.flintengine.flml.FlmlFileIconProvider"/>
   </extensions>
 </idea-plugin>

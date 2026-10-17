@@ -1,37 +1,40 @@
 package dev.flintengine.flml
 
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.openapi.extensions.PluginId
+import com.intellij.ide.FileIconProvider
+import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspServerSupportProvider
-import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
+import com.intellij.platform.lsp.api.LspIntegrationProvider
+import com.intellij.platform.lsp.api.ProjectWideLspClientDescriptor
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import java.nio.file.Path
-import com.intellij.ide.FileIconProvider
-import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
 
-private fun pluginDir(): Path =
-    PluginManagerCore.getPlugin(PluginId.getId("dev.flintengine.flml"))!!.pluginPath
+private const val FLML_EXTENSION = "flml"
 
-class FlmlLspServerSupportProvider : LspServerSupportProvider {
+private fun isFlml(file: VirtualFile) = file.extension == FLML_EXTENSION
+
+private fun pluginDir(): Path =
+    PluginManager.getPluginByClass(FlmlIcons::class.java)!!.pluginPath
+
+class FlmlLspIntegrationProvider : LspIntegrationProvider {
     override fun fileOpened(
         project: Project,
         file: VirtualFile,
-        serverStarter: LspServerSupportProvider.LspServerStarter,
+        clientStarter: LspIntegrationProvider.LspClientStarter,
     ) {
-        if (file.extension == "flml") {
-            serverStarter.ensureServerStarted(FlmlLspServerDescriptor(project))
+        if (isFlml(file)) {
+            clientStarter.ensureClientStarted(FlmlLspClientDescriptor(project))
         }
     }
 }
 
-private class FlmlLspServerDescriptor(project: Project) :
-    ProjectWideLspServerDescriptor(project, "FLML") {
+private class FlmlLspClientDescriptor(project: Project) :
+    ProjectWideLspClientDescriptor(project, "FLML") {
 
-    override fun isSupportedFile(file: VirtualFile) = file.extension == "flml"
+    override fun isSupportedFile(file: VirtualFile) = isFlml(file)
 
     override fun createCommandLine() = GeneralCommandLine(
         "node",
@@ -53,5 +56,5 @@ object FlmlIcons {
 
 class FlmlFileIconProvider : FileIconProvider {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? =
-        if (file.extension == "flml") FlmlIcons.FILE else null
+        if (isFlml(file)) FlmlIcons.FILE else null
 }
