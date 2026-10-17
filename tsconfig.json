@@ -2,9 +2,9 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "target": "es2020",
+    "target": "esnext",
     "lib": [
-      "es2020"
+      "ESNext"
     ],
     "types": [
       "node"

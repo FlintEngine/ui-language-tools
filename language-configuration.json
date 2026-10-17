@@ -7,6 +7,10 @@
   },
   "brackets": [
     [
+      "<!--",
+      "-->"
+    ],
+    [
       "<",
       ">"
     ],
@@ -48,17 +52,24 @@
       "open": "\"",
       "close": "\"",
       "notIn": [
-        "string"
+        "string",
+        "comment"
       ]
     },
     {
-      "open": "",
+      "open": "<!--",
+      "close": " -->",
       "notIn": [
+        "string",
         "comment"
       ]
     }
   ],
   "surroundingPairs": [
+    {
+      "open": "<",
+      "close": ">"
+    },
     {
       "open": "{",
       "close": "}"
@@ -79,5 +90,16 @@
       "open": "\"",
       "close": "\""
     }
-  ]
+  ],
+  "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\s\\<\\>\\=\\/\\\"\\'\\(\\)\\[\\]\\{\\}]+)",
+  "indentationRules": {
+    "increaseIndentPattern": "<(?!\\?|[^>]*\\/>)([-_\\.A-Za-z0-9]+)(?=\\s|>)\\b[^>]*>(?!.*<\\/\\1>)",
+    "decreaseIndentPattern": "^\\s*(<\\/[-_\\.A-Za-z0-9]+\\b[^>]*>|-->)"
+  },
+  "folding": {
+    "markers": {
+      "start": "^\\s*<!--\\s*#region\\b.*-->",
+      "end": "^\\s*<!--\\s*#endregion\\b.*-->"
+    }
+  }
 }
