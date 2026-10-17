@@ -1,0 +1,20 @@
+<idea-plugin>
+  <id>dev.flintengine.flml</id>
+  <name>Flint UI Language Server</name>
+  <vendor url="https://flintengine.dev">Manuel Osorio</vendor>
+  <description><![CDATA[
+    Language support for FlintEngine's declarative UI markup (.flml):
+    syntax highlighting, context-aware completions, and diagnostics.
+  ]]></description>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lsp</depends>
+  <depends>org.jetbrains.plugins.textmate</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <platform.lsp.serverSupportProvider
+      implementation="dev.flintengine.flml.FlmlLspServerSupportProvider" />
+    <textmate.bundleProvider
+      implementation="dev.flintengine.flml.FlmlTextMateBundleProvider" />
+  </extensions>
+</idea-plugin>

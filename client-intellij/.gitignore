@@ -1,0 +1,19 @@
+
+# Gradle build output
+build/
+.gradle/
+
+# IntelliJ project files (generated)
+.idea/
+*.iml
+.intellijPlatform/
+
+# Kotlin build cache
+.kotlin/
+
+# Gradle wrapper jar (optional — some teams commit it)
+gradle/wrapper/gradle-wrapper.jar
+
+# OS
+.DS_Store
+Thumbs.db
