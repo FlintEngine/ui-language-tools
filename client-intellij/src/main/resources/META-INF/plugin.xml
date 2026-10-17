@@ -1,11 +1,13 @@
 <idea-plugin>
   <id>dev.flintengine.flml</id>
   <name>Flint UI Language Server</name>
-  <vendor url="https://flintengine.dev">Manuel Osorio</vendor>
+  <vendor url="https://flintengine.dev">FlintEngine</vendor>
   <description><![CDATA[
-    Language support for FlintEngine's declarative UI markup (.flml):
-    syntax highlighting, context-aware completions, and diagnostics.
-  ]]></description>
+  Language support for FlintEngine's declarative UI markup (.flml):
+  syntax highlighting, context-aware completions, and diagnostics.
+  <br/><br/>
+  <a href="https://github.com/FlintEngine/ui-language-tools">Source &amp; issues on GitHub</a>
+]]></description>
 
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lsp</depends>

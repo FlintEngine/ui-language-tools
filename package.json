@@ -1,11 +1,19 @@
 {
   "name": "flint-ui-language-server",
   "displayName": "Flint UI Language Server",
-  "description": "Language support for FlintEngine's declarative UI markup, including syntax highlighting, context-aware completions, and diagnostics.",
+  "description": "Language support for FlintEngine's declarative UI markup (.flml): syntax highlighting, context-aware completions, and diagnostics.",
   "version": "0.1.1",
   "author": "Manuel Osorio",
   "publisher": "FlintEngine",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlintEngine/ui-language-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlintEngine/ui-language-tools/issues"
+  },
+  "homepage": "https://github.com/FlintEngine/ui-language-tools#readme",
   "categories": [
     "Programming Languages"
   ],

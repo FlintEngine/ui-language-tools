@@ -6,7 +6,7 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/manuelosorio/flint-lsp.git"
+    "url": "https://github.com/FlintEngine/ui-language-tools.git"
   },
   "engines": {
     "vscode": "^1.75.0"
