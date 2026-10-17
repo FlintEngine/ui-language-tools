@@ -2,7 +2,7 @@
   "name": "flint-ui-language-server",
   "displayName": "Flint UI Language Server",
   "description": "Language support for FlintEngine's declarative UI markup, including syntax highlighting, context-aware completions, and diagnostics.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Manuel Osorio",
   "publisher": "FlintEngine",
   "license": "MIT",
