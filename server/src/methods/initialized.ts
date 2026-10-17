@@ -12,11 +12,17 @@ export interface InitializeResult {
 }
 
 
-export const initialize = (message: RequestMessage): InitializeResult=>{
+export const initialize = (message: RequestMessage): InitializeResult => {
   return {
     capabilities: {
-      completionProvider: {},
-      textDocumentSync: 1
+      completionProvider: {
+        triggerCharacters: ["<", " ", "="]
+      },
+      textDocumentSync: 1,
+      diagnosticProvider: {
+        interFileDependencies: false,
+        workspaceDiagnostics: false
+      }
     },
     serverInfo: {
       name: "flint-ui-lsp",

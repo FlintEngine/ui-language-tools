@@ -1,19 +1,22 @@
 import log from "./log";
 import { initialize } from "./methods/initialized";
 import { completion } from "./methods/text-document/completion";
+import { diagnostic } from "./methods/text-document/diagnostic";
 import { didChange } from "./methods/text-document/did-change";
 import { didOpen } from "./methods/text-document/did-open";
 import { NotificationMessage, RequestMessage, ResponseMessage } from "./types/types";
 
-type RequestMethod = (message: RequestMessage) => ReturnType<typeof initialize> | ReturnType<typeof completion>;
+type RequestMethod = (message: RequestMessage) => ReturnType<typeof initialize> | ReturnType<typeof completion> | ReturnType<typeof diagnostic>;
 
 type NotificationMethod = (message: NotificationMessage) => void;
 
 const methodLookup: Record<string, RequestMethod | NotificationMethod> = {
   initialize,
+  initialized: () => undefined,
   "textDocument/completion": completion,
   "textDocument/didChange": didChange,
-  "textDocument/didOpen": didOpen
+  "textDocument/didOpen": didOpen,
+  "textDocument/diagnostic": diagnostic
 }
 
 const response = (id: RequestMessage['id'], result: unknown) => {

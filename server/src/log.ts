@@ -1,6 +1,9 @@
-import * as fs from "node:fs";
+import { createWriteStream } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path"
+const logFilePath = join(tmpdir(), "flint-lsp.log");
 
-const log = fs.createWriteStream("./tmp/lsp.log");
+const log = createWriteStream(logFilePath)
 
 export default {
   write: (message: object | unknown) => {

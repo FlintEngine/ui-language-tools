@@ -2,6 +2,15 @@ export interface Message {
   jsonrpc: string;
 }
 
+export interface Position {
+  line: number;
+  character: number;
+}
+
+export interface Range {
+  start: Position;
+  end: Position
+}
 
 export interface NotificationMessage extends Message {
   method: string;
