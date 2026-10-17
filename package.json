@@ -1,11 +1,14 @@
 {
-  "name": "flint-ui-lsp",
-  "description": "",
+  "name": "flint-ui-language-server",
+  "displayName": "Flint UI Language Server",
+  "description": "Language support for FlintEngine's declarative UI markup, including syntax highlighting, context-aware completions, and diagnostics.",
+  "version": "0.1.0",
   "author": "Manuel Osorio",
-  "publisher": "Manuel Osorio",
+  "publisher": "FlintEngine",
   "license": "MIT",
-  "version": "0.0.1",
-  "categories": [],
+  "categories": [
+    "Programming Languages"
+  ],
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -16,14 +19,12 @@
   "contributes": {
     "languages": [
       {
-        "id": "fml",
+        "id": "flml",
         "extensions": [
-          ".fml",
           ".flml"
         ],
         "aliases": [
           "Flint Markup Language",
-          "fml",
           "Flint UI"
         ],
         "configuration": "./language-configuration.json"
@@ -31,15 +32,16 @@
     ],
     "grammars": [
       {
-        "language": "fml",
-        "scopeName": "text.fml",
+        "language": "flml",
+        "scopeName": "text.flml",
         "path": "./syntaxes/flint-markup.tmLanguage.json"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -b",
+    "vscode:publish": "npx @vscode/vsce package",
+    "compile": "tsc -b client server",
     "watch": "tsc -b -w",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
   },

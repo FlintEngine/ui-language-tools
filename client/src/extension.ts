@@ -27,10 +27,10 @@ export function activate(context: ExtensionContext) {
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
-      { scheme: "file", language: "fml" }
+      { scheme: "file", language: "flml" }
     ],
     synchronize: {
-      fileEvents: [workspace.createFileSystemWatcher("**/*.fml"), workspace.createFileSystemWatcher("**/*.flml")],
+      fileEvents: [workspace.createFileSystemWatcher("**/*.flml")],
     },
   };
 

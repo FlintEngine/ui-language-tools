@@ -1,0 +1,35 @@
+# Source files (compiled JavaScript is distributed)
+client/src/**
+server/src/**
+**/*.ts
+**/*.tsbuildinfo
+**/*.map
+
+# npm installation artifacts
+**/node_modules/.bin/**
+**/node_modules/.package-lock.json
+**/package-lock.json
+
+# Tests and development configuration
+**/test/**
+**/tests/**
+**/*.test.*
+**/*.spec.*
+.vscode/**
+.github/**
+.gitignore
+.eslintignore
+.eslintrc*
+.prettierrc*
+**/tsconfig*.json
+test-env/**
+
+# Development artifacts
+coverage/**
+*.log
+*.vsix
+*.tgz
+.DS_Store
+*.zip
+
+client-intellij/**
