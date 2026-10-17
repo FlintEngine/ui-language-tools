@@ -4,7 +4,112 @@
   "scopeName": "text.flml",
   "patterns": [
     {
-      "include": "text.xml"
+      "include": "#comment"
+    },
+    {
+      "include": "#tag"
+    },
+    {
+      "include": "#entity"
     }
-  ]
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.block.flml",
+      "begin": "<!--",
+      "end": "-->",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.flml"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.flml"
+        }
+      }
+    },
+    "tag": {
+      "name": "meta.tag.flml",
+      "begin": "(</?)([A-Za-z_][\\w.:-]*)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.flml"
+        },
+        "2": {
+          "name": "entity.name.tag.flml"
+        }
+      },
+      "end": "/?>",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.tag.end.flml"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#attribute-name"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "name": "punctuation.separator.key-value.flml",
+          "match": "="
+        }
+      ]
+    },
+    "attribute-name": {
+      "name": "entity.other.attribute-name.flml",
+      "match": "[A-Za-z_][\\w.:-]*"
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.flml",
+          "begin": "\"",
+          "end": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.flml"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.flml"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#entity"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.flml",
+          "begin": "'",
+          "end": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.flml"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.flml"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#entity"
+            }
+          ]
+        }
+      ]
+    },
+    "entity": {
+      "name": "constant.character.entity.flml",
+      "match": "&(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+|#x[0-9A-Fa-f]+);"
+    }
+  }
 }

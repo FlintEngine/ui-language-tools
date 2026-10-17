@@ -9,6 +9,9 @@ import com.intellij.platform.lsp.api.LspServerSupportProvider
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import java.nio.file.Path
+import com.intellij.ide.FileIconProvider
+import com.intellij.openapi.util.IconLoader
+import javax.swing.Icon
 
 private fun pluginDir(): Path =
     PluginManagerCore.getPlugin(PluginId.getId("dev.flintengine.flml"))!!.pluginPath
@@ -41,4 +44,14 @@ class FlmlTextMateBundleProvider : TextMateBundleProvider {
     override fun getBundles() = listOf(
         TextMateBundleProvider.PluginBundle("FLML", pluginDir().resolve("textmate"))
     )
+}
+
+object FlmlIcons {
+    @JvmField
+    val FILE: Icon = IconLoader.getIcon("/icons/flml.svg", FlmlIcons::class.java)
+}
+
+class FlmlFileIconProvider : FileIconProvider {
+    override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? =
+        if (file.extension == "flml") FlmlIcons.FILE else null
 }

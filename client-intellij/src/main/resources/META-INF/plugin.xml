@@ -16,5 +16,7 @@
       implementation="dev.flintengine.flml.FlmlLspServerSupportProvider" />
     <textmate.bundleProvider
       implementation="dev.flintengine.flml.FlmlTextMateBundleProvider" />
+    <fileIconProvider
+      implementation="dev.flintengine.flml.FlmlFileIconProvider" />
   </extensions>
 </idea-plugin>
