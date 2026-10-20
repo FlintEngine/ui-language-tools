@@ -1,6 +1,7 @@
 import { Diagnostic, DiagnosticSeverity } from "../../types/diagnostics-types";
 import { AttrToken, TagToken } from "../../types/tags-types";
-import { schema } from "../schema";
+import { elements } from "../schema";
+
 import { makeDiagnostic } from "./make-diagnostics";
 
 function positionAt(content: string, offset: number): { line: number; col: number } {
@@ -84,7 +85,7 @@ export function checkClosing(tags: TagToken[]): Diagnostic[] {
   const stack: TagToken[] = [];
 
   for (const tag of tags) {
-    if (!(schema.elements as readonly string[]).includes(tag.name)) continue;
+    if (!(tag.name in elements)) continue;
     if (tag.type === "self") continue;
 
     if (tag.type === "open") {

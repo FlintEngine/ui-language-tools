@@ -1,82 +1,181 @@
 export type ElementKind = "self-closing" | "inline" | "block";
+
 export enum AttributeType {
   COLOR = "color",
   ENUM = "enum",
   ID = "id",
   STRING = "string",
-  NUMBER = "number"
+  NUMBER = "number",
+  BOX = "box",
+  PATH = "path",
 }
 
-
-interface SchemaType {
-  elements: readonly string[];
-  elementKinds: Record<string, ElementKind>;
-  attributes: Record<string, string[]>;
-  attributeTypes: Record<string, AttributeType>;
-  values: Record<string, string[]>;
+export interface AttributeConfig {
+  type: AttributeType;
+  description?: string;
+  values?: readonly string[];
 }
 
+const align = ["start", "center", "end", "stretch"] as const;
 
-export const schema: SchemaType = {
-  elements: ["context", "panel", "button", "label", "slider", "sprite"] as const,
+export const attributes = {
+  // Identity
+  id: { type: AttributeType.ID, description: "Unique id used to look the widget up from code." },
+  name: { type: AttributeType.ID, description: "Context name." },
 
-  elementKinds: {
-    context: "block",
-    panel: "block",
-    button: "inline",
-    label: "inline",
-    slider: "self-closing",
-    sprite: "self-closing",
+  // Layout
+  layout: { type: AttributeType.ENUM, description: "How children are arranged.", values: ["vertical", "horizontal", "none"] },
+  "horizontal-align": { type: AttributeType.ENUM, values: align },
+  "vertical-align": { type: AttributeType.ENUM, values: align },
+  "layout-grow": { type: AttributeType.NUMBER },
+  gap: { type: AttributeType.NUMBER },
+  padding: { type: AttributeType.BOX, description: "1–4 numbers: all | v h | top h bottom | top right bottom left." },
+  width: { type: AttributeType.NUMBER },
+  height: { type: AttributeType.NUMBER },
+  x: { type: AttributeType.NUMBER },
+  y: { type: AttributeType.NUMBER },
+
+  // Text
+  "font-family": { type: AttributeType.STRING },
+  "font-size": { type: AttributeType.NUMBER },
+  "font-weight": { type: AttributeType.NUMBER },
+  "optical-bias": { type: AttributeType.NUMBER },
+
+  // Colors
+  color: { type: AttributeType.COLOR },
+  "hover-color": { type: AttributeType.COLOR },
+  "fill-color": { type: AttributeType.COLOR },
+  "trackbar-color": { type: AttributeType.COLOR },
+  "thumb-color": { type: AttributeType.COLOR },
+
+  // Button
+  "icon-placement": { type: AttributeType.ENUM, values: ["left", "right"] },
+
+  // Slider
+  min: { type: AttributeType.NUMBER, description: "Minimum value that slider can have." },
+  max: { type: AttributeType.NUMBER, description: "Maximum value that slider can have." },
+  step: { type: AttributeType.NUMBER, description: "Increment amount for slider thumb." },
+  value: { type: AttributeType.NUMBER, description: "Starting value for slider." },
+  "thumb-width": { type: AttributeType.NUMBER, description: "" },
+  "thumb-height": { type: AttributeType.NUMBER, description: "" },
+
+  // Sprite
+  src: { type: AttributeType.PATH, description: "Image path, relative to the assets root." },
+} as const satisfies Record<string, AttributeConfig>;
+
+export type AttributeName = keyof typeof attributes;
+
+export function isAttributeName(name: string): name is AttributeName {
+  return Object.hasOwn(attributes, name);
+}
+
+export function getAttributeConfig(name: string): AttributeConfig | undefined {
+  return isAttributeName(name) ? attributes[name] : undefined;
+}
+
+interface ElementConfig {
+  kind: ElementKind;
+  description?: string;
+  attributes: readonly AttributeName[];
+}
+
+export const elements = {
+  context: {
+    kind: "block",
+    description: "Root UI context that groups a complete interface tree.",
+    attributes: ["name"],
   },
 
-  attributes: {
-    context: ["name"],
-    panel: ["id", "layout", "gap", "padding", "horizontal-align", "vertical-align", "layout-grow", "height", "width", 'x', 'y'],
-    button: ["id", "font-family", "font-size", "font-weight", "optical-bias", "color", "hover-color", "gap", "icon-placement", "height", "width", 'x', 'y'],
-    label: ["id", "font-family", "font-size", "font-weight", "optical-bias", "color", 'x', 'y', "horizontal-align", "vertical-align"],
-    slider: ["id", "min", "max", "step", "value", "fill-color", "trackbar-color", "thumb-color", "thumb-height", "thumb-width", "layout-grow", "horizontal-align", "vertical-align"],
-    sprite: ["id", "src", "height", "width"],
+  panel: {
+    kind: "block",
+    description: "Container used to group and lay out child UI elements.",
+    attributes: [
+      "id",
+      "layout",
+      "gap",
+      "padding",
+      "horizontal-align",
+      "vertical-align",
+      "layout-grow",
+      "height",
+      "width",
+      "x",
+      "y",
+    ],
   },
 
-  attributeTypes: {
-    name: AttributeType.ID,
-    id: AttributeType.ID,
-    src: AttributeType.STRING,
-    gap: AttributeType.NUMBER,
-    padding: AttributeType.NUMBER,
-    "layout-grow": AttributeType.NUMBER,
-    "font-family": AttributeType.STRING,
-    "font-size": AttributeType.NUMBER,
-    "font-weight": AttributeType.NUMBER,
-    "optical-bias": AttributeType.NUMBER,
-    min: AttributeType.NUMBER,
-    max: AttributeType.NUMBER,
-    step: AttributeType.NUMBER,
-    value: AttributeType.NUMBER,
-    size: AttributeType.NUMBER,
-    width: AttributeType.NUMBER,
-    height: AttributeType.NUMBER,
-    x: AttributeType.NUMBER,
-    y: AttributeType.NUMBER,
-    color: AttributeType.COLOR,
-    "hover-color": AttributeType.COLOR,
-    "fill-color": AttributeType.COLOR,
-    "trackbar-color": AttributeType.COLOR,
-    "thumb-color": AttributeType.COLOR,
-    "thumb-height": AttributeType.NUMBER,
-    "thumb-width": AttributeType.NUMBER,
-    layout: AttributeType.ENUM,
-    "horizontal-align": AttributeType.ENUM,
-    "vertical-align": AttributeType.ENUM,
-    "icon-placement": AttributeType.ENUM,
+  button: {
+    kind: "inline",
+    description: "Interactive button that can contain text and inline child content.",
+    attributes: [
+      "id",
+      "font-family",
+      "font-size",
+      "font-weight",
+      "optical-bias",
+      "color",
+      "hover-color",
+      "gap",
+      "icon-placement",
+      "height",
+      "width",
+      "x",
+      "y",
+    ],
   },
 
-  values: {
-    "layout": ["vertical", "horizontal", "none"],
-    "horizontal-align": ["start", "center", "end", "stretch"],
-    "vertical-align": ["start", "center", "end", "stretch"],
-    "icon-placement": ["left", "right"],
+  label: {
+    kind: "inline",
+    description: "Non-interactive text element.",
+    attributes: [
+      "id",
+      "font-family",
+      "font-size",
+      "font-weight",
+      "optical-bias",
+      "color",
+      "x",
+      "y",
+      "horizontal-align",
+      "vertical-align",
+    ],
   },
-};
 
-export type ElementName = typeof schema.elements[number];
+  slider: {
+    kind: "self-closing",
+    description: "Interactive numeric value selector with configurable range and styling.",
+    attributes: [
+      "id",
+      "min",
+      "max",
+      "step",
+      "value",
+      "fill-color",
+      "trackbar-color",
+      "thumb-color",
+      "thumb-height",
+      "thumb-width",
+      "layout-grow",
+      "horizontal-align",
+      "vertical-align",
+    ],
+  },
+
+  sprite: {
+    kind: "self-closing",
+    description: "Displays an image asset inside the UI.",
+    attributes: ["id", "src", "height", "width"],
+  },
+} as const satisfies Record<string, ElementConfig>;
+
+export type ElementName = keyof typeof elements;
+
+export function isElementName(name: string): name is ElementName {
+  return Object.hasOwn(elements, name);
+}
+
+export function getElementConfig(name: string): ElementConfig | undefined {
+  return isElementName(name) ? elements[name] : undefined;
+}
+
+export const schema = {}

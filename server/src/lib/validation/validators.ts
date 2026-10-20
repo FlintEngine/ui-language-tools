@@ -1,6 +1,6 @@
 import { Diagnostic, DiagnosticSeverity } from "../../types/diagnostics-types";
 import { TagToken } from "../../types/tags-types";
-import { AttributeType, schema } from "../schema";
+import { attributes, AttributeType, elements } from "../schema";
 import { closestMatch } from "./close-match";
 import { makeDiagnostic } from "./make-diagnostics";
 
@@ -116,11 +116,13 @@ export function validateValue(type: AttributeType, value: string): string | null
 
 export function validateTags(tags: TagToken[]): Diagnostic[] {
   const items: Diagnostic[] = [];
+  const elementNames = Object.keys(elements);
 
   for (const tag of tags) {
-    if (!(schema.elements as readonly string[]).includes(tag.name)) {
-      const suggestion = closestMatch(tag.name, schema.elements);
+    if (!(tag.name in elements)) {
+      const suggestion = closestMatch(tag.name, elementNames);
       const hint = suggestion ? ` Did you mean '<${suggestion}>'?` : "";
+
       items.push(makeDiagnostic(tag.line, tag.col, tag.name.length, DiagnosticSeverity.Error,
         `Unknown element '<${tag.name}>'.${hint}`));
       continue;
@@ -128,36 +130,66 @@ export function validateTags(tags: TagToken[]): Diagnostic[] {
 
     if (tag.type === "close") continue;
 
-    const validAttrs = schema.attributes[tag.name] ?? [];
+    const element = elements[tag.name as keyof typeof elements];
+    const validAttrs = element.attributes as readonly string[];
+
 
     for (const attr of tag.attrs) {
       if (!validAttrs.includes(attr.name)) {
         const suggestion = closestMatch(attr.name, validAttrs);
         const hint = suggestion ? ` Did you mean '${suggestion}'?` : "";
-        items.push(makeDiagnostic(attr.line, attr.col, attr.name.length, DiagnosticSeverity.Error,
-          `Unknown attribute '${attr.name}' on <${tag.name}>.${hint}`));
+
+        items.push(
+          makeDiagnostic(
+            attr.line,
+            attr.col,
+            attr.name.length,
+            DiagnosticSeverity.Error,
+            `Unknown attribute '${attr.name}' on <${tag.name}>.${hint}`
+          )
+        );
+
         continue;
       }
 
-      if (attr.value === undefined) continue;
-      const valueLength = attr.value.length;
+      if (attr.value === undefined)
+        continue;
 
-      const validValues = schema.values[attr.name];
-      if (validValues) {
+      const config = attributes[attr.name as keyof typeof attributes];
+
+      if ("values" in config && config.values) {
+        const validValues = config.values as readonly string[];
+
         if (!validValues.includes(attr.value)) {
           const suggestion = closestMatch(attr.value, validValues);
           const hint = suggestion ? ` Did you mean '${suggestion}'?` : "";
-          items.push(makeDiagnostic(attr.valueLine, attr.valueCol, Math.max(valueLength, 1), DiagnosticSeverity.Error,
-            `Invalid value '${attr.value}' for '${attr.name}' on <${tag.name}>. Expected: ${validValues.join(", ")}.${hint}`));
+
+          items.push(
+            makeDiagnostic(
+              attr.valueLine,
+              attr.valueCol,
+              Math.max(attr.value.length, 1),
+              DiagnosticSeverity.Error,
+              `Invalid value '${attr.value}' for '${attr.name}' on <${tag.name}>. Expected: ${validValues.join(", ")}.${hint}`
+            )
+          );
         }
+
         continue;
       }
-      const attrType = schema.attributeTypes[attr.name];
-      if (attrType) {
-        const error = validateValue(attrType, attr.value);
-        if (error) {
-          items.push(makeDiagnostic(attr.valueLine, attr.valueCol, Math.max(valueLength, 1), DiagnosticSeverity.Error, error));
-        }
+
+      const error = validateValue(config.type, attr.value);
+
+      if (error) {
+        items.push(
+          makeDiagnostic(
+            attr.valueLine,
+            attr.valueCol,
+            Math.max(attr.value.length, 1),
+            DiagnosticSeverity.Error,
+            error
+          )
+        );
       }
     }
   }

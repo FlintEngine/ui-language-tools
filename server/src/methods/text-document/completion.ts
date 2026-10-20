@@ -1,6 +1,6 @@
 import { documents } from "../../document";
 import { getCursorContext } from "../../lib/context";
-import { schema, ElementKind } from "../../lib/schema";
+import { AttributeType, ElementKind, attributes, elements, getAttributeConfig, } from "../../lib/schema";
 import log from "../../log";
 import { RequestMessage, TextDocumentIdentifier } from "../../types/types";
 
@@ -75,34 +75,47 @@ export const completion = (message: RequestMessage): CompletionList | null => {
   if (ctx.kind === "element") {
     return {
       isIncomplete: false,
-      items: schema.elements.map(name => {
-        const kind = schema.elementKinds[name] ?? "self-closing";
+      items: Object.entries(elements).map(([name, config]) => ({
+        label: name,
+        insertText: elementSnippet(name, config.kind),
+        insertTextFormat: 2,
+        detail: config.kind,
+      })),
+    };
+  }
+
+  if (ctx.kind === "attribute") {
+    const element = elements[ctx.element as keyof typeof elements];
+
+    if (!element)
+      return { isIncomplete: false, items: [] };
+
+    return {
+      isIncomplete: false,
+      items: element.attributes.map(name => {
+        const config = getAttributeConfig(name);
+
         return {
           label: name,
-          insertText: elementSnippet(name, kind),
-          insertTextFormat: 2, detail: kind,
+          insertText: `${name}="\${1}"\$0`,
+          insertTextFormat: 2,
+          detail: config ? config.description : `attribute for <${ctx.element}>`,
         };
       }),
     };
   }
 
-  if (ctx.kind === "attribute") {
-    const attrs = schema.attributes[ctx.element] ?? [];
-    return {
-      isIncomplete: false,
-      items: attrs.map(name => ({
-        label: name,
-        insertText: `${name}="\${1}"\$0`,
-        insertTextFormat: 2,
-        detail: `attribute for <${ctx.element}>`
-      }))
-    };
-  }
-
   if (ctx.kind === "value") {
-    const isColorAttribute = ctx.attribute.toLowerCase().includes("color");
+    if (!(ctx.attribute in attributes))
+      return { isIncomplete: false, items: [] };
 
-    if (isColorAttribute) {
+    const config = getAttributeConfig(
+      ctx.attribute as keyof typeof attributes
+    );
+
+    if (!config) { return null; }
+
+    if (config.type === AttributeType.COLOR) {
       const COLOR_KIND = 16;
 
       const colorSnippets: CompletionItem[] = [
@@ -133,16 +146,20 @@ export const completion = (message: RequestMessage): CompletionList | null => {
           ...(hex !== null ? { kind: COLOR_KIND } : {}),
         })),
       ];
+
       return { isIncomplete: false, items: colorSnippets };
     }
 
-
-    const values = schema.values[ctx.attribute] ?? [];
-    return {
-      isIncomplete: false,
-      items: values.map(label => ({ label, insertTextFormat: 2 }))
-    };
+    if (config.type === AttributeType.ENUM && config.values) {
+      return {
+        isIncomplete: false,
+        items: config.values.map(label => ({
+          label,
+          insertText: label,
+          insertTextFormat: 1,
+        })),
+      };
+    }
   }
-
   return { isIncomplete: false, items: [] };
 };

@@ -1,6 +1,6 @@
 export type CursorContext =
   | { kind: "element" }
-  | { kind: "attribute"; element: string }
+  | { kind: "attribute"; element: string; }
   | { kind: "value"; element: string; attribute: string }
   | { kind: "none" };
 
@@ -17,7 +17,7 @@ export function getCursorContext(fullTextUpToCursor: string): CursorContext {
 
     const elementMatch = tagContent.match(/^<([\w-]+)/);
     if (!elementMatch) {
-      return { kind: "element" }; // User typed just "<"
+      return { kind: "element" };
     }
 
     const element = elementMatch[1];
