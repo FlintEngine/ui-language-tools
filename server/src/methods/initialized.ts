@@ -1,6 +1,17 @@
 import { RequestMessage } from "../types/types";
 
-type ServerCapabilities = Record<string, unknown>
+interface ServerCapabilities {
+  colorProvider?: boolean;
+  completionProvider?: {
+    triggerCharacters?: string[];
+  };
+  textDocumentSync?: number;
+  diagnosticProvider?: {
+    interFileDependencies: boolean;
+    workspaceDiagnostics: boolean;
+  };
+  hoverProvider?: boolean;
+}
 
 export interface InitializeResult {
   capabilities: ServerCapabilities;
@@ -12,9 +23,10 @@ export interface InitializeResult {
 }
 
 
-export const initialize = (message: RequestMessage): InitializeResult => {
+export const initialize = (_message: RequestMessage): InitializeResult => {
   return {
     capabilities: {
+      colorProvider: true,
       completionProvider: {
         triggerCharacters: ["<", " ", "="]
       },
@@ -22,11 +34,12 @@ export const initialize = (message: RequestMessage): InitializeResult => {
       diagnosticProvider: {
         interFileDependencies: false,
         workspaceDiagnostics: false
-      }
+      },
+      hoverProvider: true,
     },
     serverInfo: {
-      name: "flint-ui-lsp",
-      version: "0.0.1"
+      name: "flintengine-language-server",
+      version: "0.2.0"
     }
   }
 };

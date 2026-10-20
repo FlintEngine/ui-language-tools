@@ -1,23 +1,28 @@
 #!/usr/bin/env node
 import log from "./log";
 import { initialize } from "./methods/initialized";
+import { colorPresentation, documentColor } from "./methods/text-document/color";
 import { completion } from "./methods/text-document/completion";
 import { diagnostic } from "./methods/text-document/diagnostic";
 import { didChange } from "./methods/text-document/did-change";
 import { didOpen } from "./methods/text-document/did-open";
+import { hover } from "./methods/text-document/hover";
 import { NotificationMessage, RequestMessage, ResponseMessage } from "./types/types";
 
-type RequestMethod = (message: RequestMessage) => ReturnType<typeof initialize> | ReturnType<typeof completion> | ReturnType<typeof diagnostic>;
+type RequestMethod = (message: RequestMessage) => ReturnType<typeof initialize> | ReturnType<typeof completion> | ReturnType<typeof diagnostic> | ReturnType<typeof hover> | ReturnType<typeof documentColor> | ReturnType<typeof colorPresentation>;
 
 type NotificationMethod = (message: NotificationMessage) => void;
 
 const methodLookup: Record<string, RequestMethod | NotificationMethod> = {
   initialize,
   initialized: () => undefined,
+  "textDocument/colorPresentation": colorPresentation,
   "textDocument/completion": completion,
+  "textDocument/documentColor": documentColor,
   "textDocument/didChange": didChange,
   "textDocument/didOpen": didOpen,
-  "textDocument/diagnostic": diagnostic
+  "textDocument/diagnostic": diagnostic,
+  "textDocument/hover": hover,
 }
 
 const response = (id: RequestMessage['id'], result: unknown) => {
