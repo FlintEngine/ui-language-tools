@@ -2,7 +2,7 @@
   "name": "flint-ui-language-server",
   "displayName": "Flint UI Language Server",
   "description": "Language support for FlintEngine's declarative UI markup (.flml): syntax highlighting, context-aware completions, and diagnostics.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Manuel Osorio",
   "publisher": "FlintEngine",
   "license": "MIT",
@@ -71,9 +71,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm ci && npm run compile && npm prune --omit=dev --prefix client && npm prune --omit=dev --prefix server",
     "vscode:publish": "npx @vscode/vsce package",
-    "compile": "tsc -b client server",
+    "compile": "tsc -b client server --force",
     "watch": "tsc -b -w",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
   },
