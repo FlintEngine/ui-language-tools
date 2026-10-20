@@ -3,21 +3,23 @@ package dev.flintengine.flml
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.FileIconProvider
 import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.application.PluginPathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspIntegrationProvider
 import com.intellij.platform.lsp.api.ProjectWideLspClientDescriptor
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
-import java.nio.file.Path
+import java.io.File
 import javax.swing.Icon
 
 private const val FLML_EXTENSION = "flml"
 
 private fun isFlml(file: VirtualFile) = file.extension == FLML_EXTENSION
 
-private fun pluginDir(): Path =
-    PluginManager.getPluginByClass(FlmlIcons::class.java)!!.pluginPath
+private fun pluginFile(relative: String): File =
+    PluginPathManager.getPluginResource(FlmlIcons::class.java, relative)
+        ?: error("FLML plugin resource not found: $relative")
 
 class FlmlLspIntegrationProvider : LspIntegrationProvider {
     override fun fileOpened(
@@ -38,14 +40,14 @@ private class FlmlLspClientDescriptor(project: Project) :
 
     override fun createCommandLine() = GeneralCommandLine(
         "node",
-        pluginDir().resolve("server/server.js").toString(),
+        pluginFile("server/server.js").path,
         "--stdio",
     )
 }
 
 class FlmlTextMateBundleProvider : TextMateBundleProvider {
     override fun getBundles() = listOf(
-        TextMateBundleProvider.PluginBundle("FLML", pluginDir().resolve("textmate"))
+        TextMateBundleProvider.PluginBundle("FLML", pluginFile("textmate").toPath())
     )
 }
 
