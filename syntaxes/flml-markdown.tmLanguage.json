@@ -1,0 +1,17 @@
+{
+  "scopeName": "flml.markdown.injection",
+  "injectionSelector": "L:text.html.markdown - markup.fenced_code.block.markdown",
+  "patterns": [
+    {
+      "name": "markup.fenced_code.block.markdown",
+      "begin": "^([ \\t]*)(`{3,}|~{3,})[ \\t]*flml[ \\t]*$",
+      "end": "^[ \\t]*(?:`{3,}|~{3,})[ \\t]*$",
+      "contentName": "meta.embedded.block.flml",
+      "patterns": [
+        {
+          "include": "text.flml"
+        }
+      ]
+    }
+  ]
+}

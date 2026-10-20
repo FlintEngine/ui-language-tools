@@ -47,6 +47,16 @@
         "language": "flml",
         "scopeName": "text.flml",
         "path": "./syntaxes/flint-markup.tmLanguage.json"
+      },
+      {
+        "scopeName": "flml.markdown.injection",
+        "path": "./syntaxes/flml-markdown.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.flml": "flml"
+        }
       }
     ],
     "configuration": {
