@@ -57,6 +57,9 @@ function attributeTypeLabel(type: AttributeType): string {
     case AttributeType.PATH: {
       return "path";
     }
+    default: {
+      return "undefined";
+    }
   }
 }
 
