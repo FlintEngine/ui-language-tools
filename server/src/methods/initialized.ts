@@ -39,7 +39,7 @@ export const initialize = (_message: RequestMessage): InitializeResult => {
     },
     serverInfo: {
       name: "flintengine-language-server",
-      version: "0.2.0"
+      version: "0.2.1"
     }
   }
 };
